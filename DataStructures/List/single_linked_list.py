@@ -57,3 +57,18 @@ def size(my_list):
 
 def first_element(my_list):
     return my_list["first"]["info"]
+
+def is_empty(my_list):
+    # Aquí la idea es que si ya estamos manteniendo el size, might as well use it no?
+    # Y para hacerlo aún más elegante es cuestion de hacer que el return sea
+    # el resultado de un checkeo de validez, así retorna true o false sin
+    # agregar más lógica
+    return my_list["size"] == 0
+
+
+def last_element(my_list):
+    # En la documentación nos dicen básicamente que inclyamos esto
+    # y es super bueno porque ya hice is_empy.
+    if is_empty(my_list):
+        raise Exception('IndexError: list index out of range')
+    return my_list["last"]["info"]
