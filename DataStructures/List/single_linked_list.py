@@ -9,7 +9,7 @@ def new_list():
 
 def get_element(my_list, pos):
     searchpos = 0
-    node = my_list["fist"]
+    node = my_list["first"]
     while searchpos < pos:
         node = node["next"]
         searchpos += 1
