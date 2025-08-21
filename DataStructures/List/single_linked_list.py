@@ -15,12 +15,12 @@ def get_element(my_list, pos):
         searchpos += 1
     return node["info"]
 
-def is_present(my_list, element, cmp_function)
+def is_present(my_list, element, cmp_function):
     is_in_array = False
     temp = my_list["first"]
     count = 0
     while not is_in_array and temp is not None:
-        if cmp_function(elemet, temp["info"]) == 0:
+        if cmp_function(element, temp["info"]) == 0:
             is_in_array = True
         else:
             temp = temp["next"]
