@@ -55,8 +55,11 @@ def new_logic():
 
     catalog['books'] = lt.new_list()
     # TODO Implemente la inicialización de la lista de autores
+    catalog['authors'] = lt.new_list()
     # TODO Implemente la inicialización de la lista de tags
+    catalog['tags'] = lt.new_list()
     # TODO Implemente la inicialización de la lista de asociación de libros y tags
+    catalog['book_tags'] = lt.new_list()
     return catalog
 
 
@@ -71,11 +74,13 @@ def load_data(catalog):
     start_time = getTime()
     books, authors = load_books(catalog)
     # TODO Complete la carga de los tags
+    tags = load_tags(catalog)
     # TODO Complete la carga de los book_tags
-    # TODO Añada los parámetros de retoro necesarios
+    book_tags = load_books_tags(catalog)
+    # TODO Añada los parámetros de retorno necesarios
     end_time = getTime()
     tiempo_transcurrido = deltaTime(end_time, start_time)
-    return books, authors, tiempo_transcurrido
+    return books, authors, tags, book_tags, tiempo_transcurrido
 
 
 
@@ -101,7 +106,15 @@ def load_tags(catalog):
     :return: El número de tags cargados
     """
     # TODO Implementar la carga de los tags
-    pass
+    booksfile = data_dir + 'GoodReads/tags.csv'
+    # csv.DictReader va por cada fila en un diccionario, donde las llaves son los nombres
+    # de las columnas del CSV. Entonces en este caso la estructura se ve algo así:
+    # las llaves son 
+    # {'tag_id': str, 'tag_name': str}
+    input_file = csv.DictReader(open(booksfile, encoding='utf-8'))
+    for tag in input_file:
+        add_tag(catalog, tag)
+    return tag_size(catalog)
 
 
 def load_books_tags(catalog):
@@ -113,7 +126,10 @@ def load_books_tags(catalog):
     :return: El número de book_tags cargados
     """
     # TODO Implementar la carga de los book_tags
-    pass
+    input_file = csv.DictReader(open(data_dir + 'GoodReads/book_tags-medium.csv', encoding='utf-8'))
+    for book_tag in input_file:
+        add_book_tag(catalog, book_tag)
+    return book_tag_size(catalog)
 
 
 # Funciones de consulta sobre el catálogo
@@ -141,6 +157,10 @@ def get_best_book(catalog):
     start_time = getTime()
     best_book = None
     # TODO Implementar la función del mejor libro por rating
+    for book in catalog['books']:
+        if best_book is None or float(book['average_rating']) > float(best_book['average_rating']):
+            best_book = book
+
     end_time = getTime()
     tiempo_transcurrido = deltaTime(end_time, start_time)
     return best_book, tiempo_transcurrido
@@ -158,6 +178,11 @@ def count_books_by_tag(catalog, tag):
     start_time = getTime()
     resultado = 0
     # TODO Implementar la función de conteo de libros por tag
+    for books_tag in catalog['book_tags']:
+        if books_tag['tag_id'] == tag['tag_id']:
+        # Aquí hay un problema y es que no se si el usuario pasa un tag
+        # que es un diccionario o un string, por ahora lo dejare como diccionario.
+            resultado += 1
     end_time = getTime()
     tiempo_transcurrido = deltaTime(end_time, start_time)
     return resultado, tiempo_transcurrido
@@ -256,7 +281,8 @@ def author_size(catalog):
     :return: El número de autores en el catálogo
     """
     # TODO Implementar la función de tamaño de autores
-    pass
+    return lt.size(catalog['authors'])
+
 
 
 def tag_size(catalog):
@@ -268,7 +294,7 @@ def tag_size(catalog):
     :return: El número de tags en el catálogo
     """
     # TODO Implementar la función de tamaño de tags
-    pass
+    return lt.size(catalog['tags'])
 
 
 def book_tag_size(catalog):
@@ -280,7 +306,7 @@ def book_tag_size(catalog):
     :return: El número de book_tags en el catálogo
     """
     # TODO Implementar la función de tamaño de book_tags
-    pass
+    return lt.size(catalog['book_tags'])
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
