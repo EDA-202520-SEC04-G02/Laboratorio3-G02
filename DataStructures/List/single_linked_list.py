@@ -29,28 +29,33 @@ def is_present(my_list, element, cmp_function):
         count = -1
     return count
 
-def add_first(my_list, element):
+def add_first(my_list, element): # Vemos que es O(1)
     new_node = {
         "info": element,
         "next": my_list["first"]
     }
     my_list["first"] = new_node
-    if my_list["last"] is None: 
+    if my_list["last"] is None:  
         my_list["last"] = new_node
     my_list["size"] += 1
     return my_list
     
     
 def add_last(my_list, element):
+    # Creo nuevo nodo
     new_node = {
         "info": element,
         "next": None
     }
+    # Si la lista no está vacía, el nuevo nodo se convierte en el siguiente del último nodo
     if my_list["last"] is not None:
         my_list["last"]["next"] = new_node
+    # Actualizamos el último nodo
     my_list["last"] = new_node
+    # Si la lista estaba vacía, el nuevo nodo es también el primero
     if my_list["first"] is None:
         my_list["first"] = new_node
+    # Sumamos el nuevo nodo al tamaño de la lista
     my_list["size"] += 1
     return my_list
 
