@@ -138,11 +138,17 @@ def get_books_by_author(catalog, author_name):
     """
     Retrona los libros de un autor
     """
+    start_time = getTime()
+    
     pos_author = lt.is_present(
         catalog['authors'], author_name, compare_authors)
     if pos_author > 0:
         author = lt.get_element(catalog['authors'], pos_author)
-        return author
+        end_time = getTime()
+        tiempo = deltaTime(end_time, start_time)
+        return author, tiempo
+
+    
     return None
 
 
@@ -157,7 +163,9 @@ def get_best_book(catalog):
     start_time = getTime()
     best_book = None
     # TODO Implementar la función del mejor libro por rating
-    for book in catalog['books']:
+    size_books = lt.size(catalog['books'])
+    for i in range(size_books):  # tus listas usan índices desde 0
+        book = lt.get_element(catalog['books'], i)
         if best_book is None or float(book['average_rating']) > float(best_book['average_rating']):
             best_book = book
 
@@ -176,16 +184,28 @@ def count_books_by_tag(catalog, tag):
     :return: El número de libros que fueron etiquetados con el tag dado
     """
     start_time = getTime()
-    resultado = 0
-    # TODO Implementar la función de conteo de libros por tag
-    for books_tag in catalog['book_tags']:
-        if books_tag['tag_id'] == tag['tag_id']:
-        # Aquí hay un problema y es que no se si el usuario pasa un tag
-        # que es un diccionario o un string, por ahora lo dejare como diccionario.
-            resultado += 1
+
+    # Paso 1: buscar el tag_id correspondiente al nombre del tag
+    tag_id = None
+    for i in range(lt.size(catalog['tags'])):
+        t = lt.get_element(catalog['tags'], i)
+        if t['name'] == tag:      # tus tags se guardan como {'tag_id': ..., 'name': ...}
+            tag_id = t['tag_id']
+            break
+
+    if tag_id is None:
+        end_time = getTime()
+        return 0, deltaTime(end_time, start_time)  # No existe ese tag
+
+    # Paso 2: contar cuántos libros tienen asociado ese tag_id
+    total = 0
+    for i in range(lt.size(catalog['book_tags'])):
+        book_tag = lt.get_element(catalog['book_tags'], i)
+        if book_tag['tag_id'] == tag_id:
+            total += 1
+
     end_time = getTime()
-    tiempo_transcurrido = deltaTime(end_time, start_time)
-    return resultado, tiempo_transcurrido
+    return total, deltaTime(end_time, start_time)
 
 
 # Funciones para agregar informacion al catalogo
